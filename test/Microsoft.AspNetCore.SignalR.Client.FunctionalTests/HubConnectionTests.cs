@@ -44,8 +44,12 @@ namespace Microsoft.AspNetCore.SignalR.Client.FunctionalTests
         {
             using (StartLog(out var loggerFactory))
             {
-                var httpConnection = new HttpConnection(new Uri(_serverFixture.BaseUrl + path), transportType, loggerFactory);
-                var connection = new HubConnection(httpConnection, protocol, loggerFactory);
+                var connection = new HubConnectionBuilder(new Uri(_serverFixture.BaseUrl + path))
+                    .WithTransportType(transportType)
+                    .WithLogger(loggerFactory)
+                    .WithHubProtocol(protocol)
+                    .Build();
+
                 try
                 {
                     await connection.StartAsync().OrTimeout();
